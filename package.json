@@ -1,0 +1,11 @@
+{
+  "name": "floryandes-system",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sistema integral de gestión comercial, contable y de inventario para Flor & Andes",
+  "scripts": {
+    "dev": "npm --prefix frontend-web run dev",
+    "build": "npm --prefix frontend-web run build",
+    "preview": "npm --prefix frontend-web run preview"
+  }
+}
