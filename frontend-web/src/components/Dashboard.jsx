@@ -13,13 +13,14 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
-export default function Dashboard({ onNavigate }) {
+export default function Dashboard({ onNavigate, onNavigateToLowStock }) {
   const [dbStatus, setDbStatus] = useState({
     loading: true,
     clientesCount: 0,
     productosCount: 0,
     proveedoresCount: 0,
     usuariosCount: 0,
+    lowStockCount: 0,
     error: null,
   });
 
@@ -28,17 +29,21 @@ export default function Dashboard({ onNavigate }) {
     try {
       const [cRes, pRes, prRes, uRes] = await Promise.all([
         supabase.from('cliente').select('*', { count: 'exact', head: true }),
-        supabase.from('producto').select('*', { count: 'exact', head: true }),
+        supabase.from('producto').select('stock_actual, stock_minimo, es_inventariable, activo'),
         supabase.from('proveedor').select('*', { count: 'exact', head: true }),
         supabase.from('usuario').select('*', { count: 'exact', head: true }),
       ]);
 
+      const prods = pRes.data || [];
+      const lowCount = prods.filter(p => p.activo && p.es_inventariable && Number(p.stock_actual) < Number(p.stock_minimo)).length;
+
       setDbStatus({
         loading: false,
         clientesCount: cRes.count ?? 4,
-        productosCount: pRes.count ?? 7,
+        productosCount: prods.length ?? 7,
         proveedoresCount: prRes.count ?? 6,
         usuariosCount: uRes.count ?? 3,
+        lowStockCount: lowCount,
         error: null,
       });
     } catch (err) {
@@ -109,7 +114,7 @@ export default function Dashboard({ onNavigate }) {
 
   return (
     <div style={styles.container} className="fade-in">
-      {/* Supabase Connection Live Banner (Sprint 1 Verification) */}
+      {/* Supabase Connection Live Banner */}
       <div style={styles.dbBanner}>
         <div style={styles.dbBannerLeft}>
           <div style={styles.dbIcon}>
@@ -117,10 +122,10 @@ export default function Dashboard({ onNavigate }) {
           </div>
           <div>
             <div style={styles.dbBannerTitle}>
-              Base de Datos Supabase Conectada en Tiempo Real (Sprint 1 - Historia 1.1 a 1.3)
+              Base de Datos Supabase Conectada en Tiempo Real
             </div>
             <div style={styles.dbBannerSubtitle}>
-              Sincronizado con tablas activas: {dbStatus.clientesCount} Clientes cargados • {dbStatus.productosCount} Productos base • {dbStatus.proveedoresCount} Proveedores • {dbStatus.usuariosCount} Usuarios con roles
+              Sincronizado con tablas activas: {dbStatus.clientesCount} Clientes • {dbStatus.productosCount} Productos • {dbStatus.proveedoresCount} Proveedores • {dbStatus.usuariosCount} Usuarios
             </div>
           </div>
         </div>
@@ -130,6 +135,23 @@ export default function Dashboard({ onNavigate }) {
           <span>{dbStatus.loading ? 'Verificando...' : 'Re-verificar'}</span>
         </button>
       </div>
+
+      {/* Low Stock Alert Banner */}
+      {dbStatus.lowStockCount > 0 && (
+        <div
+          onClick={onNavigateToLowStock}
+          style={styles.lowStockBanner}
+          title="Ver productos con bajo stock en el catálogo"
+        >
+          <div style={styles.lowStockBannerLeft}>
+            <AlertTriangle size={18} color="#D97706" />
+            <span>
+              Atención en almacén: Existen <strong>{dbStatus.lowStockCount} producto(s)</strong> con existencias por debajo del stock mínimo.
+            </span>
+          </div>
+          <span style={styles.lowStockActionLink}>Filtrar productos con bajo stock</span>
+        </div>
+      )}
 
       {/* 5 Top KPI Cards (from mockup p. 23) */}
       <div style={styles.kpiGrid}>
@@ -348,6 +370,30 @@ const styles = {
     fontWeight: '600',
     color: '#334155',
     cursor: 'pointer',
+  },
+  lowStockBanner: {
+    backgroundColor: '#FFFBEB',
+    border: '1px solid #FDE68A',
+    borderRadius: '10px',
+    padding: '12px 18px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s',
+  },
+  lowStockBannerLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    fontSize: '13px',
+    color: '#92400E',
+  },
+  lowStockActionLink: {
+    fontSize: '12px',
+    fontWeight: '700',
+    color: '#B45309',
+    textDecoration: 'underline',
   },
   kpiGrid: {
     display: 'grid',

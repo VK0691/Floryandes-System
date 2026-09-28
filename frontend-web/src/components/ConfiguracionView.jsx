@@ -108,7 +108,7 @@ export default function ConfiguracionView() {
           </div>
         </div>
 
-        {/* Users & Roles (Sprint 1 Historia 1.4) */}
+        {/* Users & Roles */}
         <div style={styles.card}>
           <div style={styles.cardHeader}>
             <Shield size={20} color="#E05A2B" />

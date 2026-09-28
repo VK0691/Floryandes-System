@@ -30,7 +30,7 @@ export default function ComprasInventarioPreview({ type = 'inventario' }) {
           </h2>
           <p style={styles.subtitle}>
             {isInventario
-              ? 'Control de bonches, hierbas, stock mínimo y mermas (Sprint 6 & 7)'
+              ? 'Control de bonches, hierbas, stock mínimo y mermas'
               : 'Registro con múltiples productos, cantidades sanas y pérdidas por proveedor'}
           </p>
         </div>

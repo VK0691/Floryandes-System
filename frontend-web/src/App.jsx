@@ -15,6 +15,8 @@ import AccessDenied from './components/AccessDenied';
 function MainApp() {
   const { isAuthenticated, loading, canAccessModule } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedClientForInvoice, setSelectedClientForInvoice] = useState(null);
+  const [productStockFilter, setProductStockFilter] = useState('ALL');
 
   if (loading) {
     return (
@@ -29,8 +31,25 @@ function MainApp() {
     return <Login />;
   }
 
+  const handleFacturarCliente = (cliente) => {
+    setSelectedClientForInvoice(cliente);
+    setActiveTab('facturacion');
+  };
+
+  const handleNavigateToLowStock = () => {
+    setProductStockFilter('BAJO');
+    setActiveTab('productos');
+  };
+
+  const handleSelectTab = (tab) => {
+    if (tab === 'productos') {
+      setProductStockFilter('ALL');
+    }
+    setActiveTab(tab);
+  };
+
   const renderActiveModule = () => {
-    // Role-based route guard (Sprint 1 Historia 1.7)
+    // Control de acceso según rol de usuario
     if (!canAccessModule(activeTab)) {
       const moduleNames = {
         dashboard: 'Dashboard',
@@ -52,13 +71,18 @@ function MainApp() {
 
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard onNavigate={(tab) => setActiveTab(tab)} />;
+        return (
+          <Dashboard
+            onNavigate={(tab) => handleSelectTab(tab)}
+            onNavigateToLowStock={handleNavigateToLowStock}
+          />
+        );
       case 'facturacion':
-        return <FacturacionPreview />;
+        return <FacturacionPreview selectedClient={selectedClientForInvoice} />;
       case 'clientes':
-        return <Clientes />;
+        return <Clientes onFacturarCliente={handleFacturarCliente} />;
       case 'productos':
-        return <Productos />;
+        return <Productos initialStockFilter={productStockFilter} />;
       case 'inventario':
         return <ComprasInventarioPreview type="inventario" />;
       case 'compras':
@@ -79,7 +103,7 @@ function MainApp() {
 
       {/* Main Content Area */}
       <div style={styles.mainWrapper}>
-        <Header />
+        <Header onNavigateToLowStock={handleNavigateToLowStock} />
         <main style={styles.contentArea}>
           {renderActiveModule()}
         </main>

@@ -17,7 +17,7 @@ export default function AccessDenied({ moduleName, onBack }) {
       </p>
 
       <div style={styles.rulesBox}>
-        <span style={styles.rulesTitle}>Reglas de Seguridad (Sprint 1 - Historia 1.4 & 1.7):</span>
+        <span style={styles.rulesTitle}>Políticas de Acceso y Seguridad:</span>
         <ul style={styles.rulesList}>
           <li><strong>ADMIN:</strong> Acceso total a todos los módulos y configuraciones.</li>
           <li><strong>VENDEDOR:</strong> Acceso a Facturación, Clientes, Productos. <span style={styles.deniedTag}>Sin acceso a Configuración</span></li>

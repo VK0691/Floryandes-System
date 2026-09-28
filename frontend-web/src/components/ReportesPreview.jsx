@@ -8,7 +8,7 @@ export default function ReportesPreview() {
         <div>
           <h2 style={styles.title}>Reportes & Business Intelligence</h2>
           <p style={styles.subtitle}>
-            Análisis de utilidad por bonche, comparativa de precios y rentabilidad histórica (Sprint 8 & 9)
+            Análisis de utilidad por bonche, comparativa de precios y rentabilidad histórica
           </p>
         </div>
       </div>

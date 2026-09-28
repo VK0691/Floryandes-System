@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth, ROLES } from '../context/AuthContext';
 import { LogOut, Bell, AlertTriangle, Shield, User, ChevronDown } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ onNavigateToLowStock }) {
   const { currentUser, currentRole, roleInfo, logout, switchRole } = useAuth();
 
   // Format date in Spanish like mockup: "sábado, 27 de septiembre de 2026"
@@ -25,15 +25,20 @@ export default function Header() {
         <span style={styles.dateText}>{todayFormatted}</span>
       </div>
 
-      {/* Center: System Alerts (Mockup p. 23) */}
-      <div style={styles.alertPill}>
+      {/* Center: System Alerts */}
+      <button
+        type="button"
+        onClick={onNavigateToLowStock}
+        style={styles.alertPillBtn}
+        title="Ver productos con stock por debajo del mínimo"
+      >
         <AlertTriangle size={15} color="#D97706" />
         <span>Aster con stock bajo (5 unidades)</span>
-      </div>
+      </button>
 
-      {/* Right: Notifications, Role Switcher (Sprint 1 Testing), User Profile & Logout */}
+      {/* Right: Notifications, Role Switcher, User Profile & Logout */}
       <div style={styles.rightSection}>
-        {/* Sprint 1 Quick Role Tester */}
+        {/* Role Switcher */}
         <div style={styles.roleSwitcherBox}>
           <Shield size={14} color="#64748B" />
           <span style={styles.roleSwitcherLabel}>Rol:</span>
@@ -41,11 +46,11 @@ export default function Header() {
             value={currentRole || ROLES.ADMIN}
             onChange={(e) => switchRole(e.target.value)}
             style={styles.roleSelect}
-            title="Cambiar rol para verificar permisos del Sprint 1 (Historia 1.4 y 1.7)"
+            title="Cambiar rol activo"
           >
-            <option value={ROLES.ADMIN}>👑 ADMIN (Acceso Total)</option>
-            <option value={ROLES.VENDEDOR}>💼 VENDEDOR (Solo Facturación)</option>
-            <option value={ROLES.BODEGUERO}>📦 BODEGUERO (Solo Inventario)</option>
+            <option value={ROLES.ADMIN}>ADMIN (Acceso Total)</option>
+            <option value={ROLES.VENDEDOR}>VENDEDOR (Facturación)</option>
+            <option value={ROLES.BODEGUERO}>BODEGUERO (Inventario)</option>
           </select>
         </div>
 
@@ -116,6 +121,20 @@ const styles = {
     fontSize: '12px',
     color: '#64748B',
     textTransform: 'capitalize',
+  },
+  alertPillBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: '#FFFBEB',
+    border: '1px solid #FDE68A',
+    color: '#B45309',
+    fontSize: '12px',
+    fontWeight: '600',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
   },
   alertPill: {
     display: 'flex',

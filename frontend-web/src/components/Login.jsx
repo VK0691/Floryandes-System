@@ -138,11 +138,11 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Quick Access Badges for Sprint 1 Testing */}
+        {/* Quick Access Badges */}
         <div style={styles.demoSection}>
           <div style={styles.demoTitle}>
             <ShieldCheck size={14} color="#64748B" />
-            <span>Acceso Rápido por Rol (Sprint 1):</span>
+            <span>Acceso Rápido por Rol:</span>
           </div>
           <div style={styles.demoButtons}>
             <button
@@ -151,29 +151,29 @@ export default function Login() {
               style={styles.demoTagAdmin}
               title="Acceso total a todo el sistema"
             >
-              👑 Admin (Papá)
+              Admin (Papá)
             </button>
             <button
               type="button"
               onClick={() => handleQuickFill('vendedor@floryandes.com', 'vendedor123')}
               style={styles.demoTagVendedor}
-              title="Solo Facturación y Clientes"
+              title="Facturación y Clientes"
             >
-              💼 Vendedor
+              Vendedor
             </button>
             <button
               type="button"
               onClick={() => handleQuickFill('bodeguero@floryandes.com', 'bodeguero123')}
               style={styles.demoTagBodeguero}
-              title="Solo Inventario y Compras"
+              title="Inventario y Compras"
             >
-              📦 Bodeguero
+              Bodeguero
             </button>
           </div>
         </div>
 
         <div style={styles.footer}>
-          <span>Floryandes System v3.1 • Sprint 1</span>
+          <span>Floryandes System v3.1</span>
         </div>
       </div>
 

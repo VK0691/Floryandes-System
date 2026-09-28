@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Receipt, Plus, Trash2, Printer, Save, CheckCircle } from 'lucide-react';
 
-export default function FacturacionPreview() {
+export default function FacturacionPreview({ selectedClient = null }) {
   const [items, setItems] = useState([
     { id: 1, cantidad: 34, descripcion: 'Bonches de Rosas Rojas', precio: 2.50, costo: 2.10 },
     { id: 2, cantidad: 8, descripcion: 'Bonches de Colores', precio: 1.50, costo: 2.30 },
@@ -9,10 +9,20 @@ export default function FacturacionPreview() {
     { id: 4, cantidad: 1, descripcion: 'Guía de Envío', precio: 6.00, costo: 0.00 },
   ]);
 
-  const [cliente, setCliente] = useState('SRA. JENNY');
-  const [saldoAnterior, setSaldoAnterior] = useState(0.00);
+  const [cliente, setCliente] = useState(selectedClient?.nombre || 'SRA. JENNY');
+  const [saldoAnterior, setSaldoAnterior] = useState(
+    selectedClient ? Number(selectedClient.saldo_actual || 0) : 0.00
+  );
   const [abono, setAbono] = useState(50.00);
   const [savedNotification, setSavedNotification] = useState(false);
+
+  // Sync if selectedClient changes
+  React.useEffect(() => {
+    if (selectedClient) {
+      setCliente(selectedClient.nombre);
+      setSaldoAnterior(Number(selectedClient.saldo_actual || 0));
+    }
+  }, [selectedClient]);
 
   const subtotal = items.reduce((acc, item) => acc + item.cantidad * item.precio, 0);
   const totalFactura = subtotal;
@@ -23,7 +33,7 @@ export default function FacturacionPreview() {
       <div style={styles.header}>
         <div>
           <h2 style={styles.title}>Nueva Factura</h2>
-          <p style={styles.subtitle}>Módulo de facturación rápida (Sprint 4 & 5 Preview)</p>
+          <p style={styles.subtitle}>Módulo de facturación rápida y control de saldos</p>
         </div>
         <div style={styles.headerPills}>
           <span style={styles.facturaPill} className="num-mono"># FACT. 5</span>
