@@ -2,296 +2,119 @@
 
 Sistema integral de facturación, inventario y contabilidad para florería.
 
-![Versión](https://img.shields.io/badge/versión-1.0.0-blue)
-![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
-![Licencia](https://img.shields.io/badge/licencia-privada-red)
-
----
-
 ## 📋 Descripción
 
-**Floryandes System** es una plataforma de gestión comercial diseñada específicamente para la florería. Reemplaza el uso de múltiples hojas de cálculo Excel, centralizando la operación diaria (facturación, compras, inventario) y proporcionando inteligencia de negocio en tiempo real (utilidad por bonche, pérdidas, rentabilidad por cliente y proveedor).
+**Floryandes System** es una plataforma de gestión comercial diseñada para reemplazar hojas de cálculo de Excel, centralizando facturación, compras e inventario, con reportes financieros en tiempo real.
 
-El sistema permite:
-- Facturar bonches (Rojos, Colores, Blancos) y hierbas (Aster, Solidago).
-- Registrar compras con múltiples productos, cantidades sanas y pérdidas.
-- Controlar inventario en tiempo real.
-- Calcular utilidad bruta y neta.
-- Generar reportes por día, semana, mes y año.
-- Acceder desde PC (`.exe`), navegador web y aplicación móvil.
-
----
-
-## 🎯 Objetivos
-
-- **Centralización:** Unificar todas las hojas de cálculo en una sola base de datos.
-- **Automatización:** Eliminar cálculos manuales de subtotales, totales, saldos y utilidades.
-- **Control de Cuentas:** Registro histórico de facturas, abonos y saldos pendientes.
-- **Trazabilidad:** Saber exactamente qué se compró, a qué proveedor, cuánto se pagó y cuánto se perdió.
-- **Análisis Temporal:** Consultar el rendimiento del negocio por día, semana, mes o año.
-- **Escalabilidad:** Agregar nuevos módulos sin rehacer el sistema.
+**Características principales:**
+- Facturación por bonches (Rojos, Colores, Blancos) e hierbas (Aster, Solidago).
+- Registro de compras con control de cantidades sanas y mermas.
+- Inventario y cálculo de utilidad bruta/neta en tiempo real.
+- Reportes consolidados (día, semana, mes, año).
+- Soporte multiplataforma: Web, Desktop (`.exe`) y App Móvil.
 
 ---
 
-## 🏗️ Arquitectura
-┌─────────────────────────────────────────────────────────────┐
-│ FRONTENDS │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │
-│ │ Web App │ │ App Móvil │ │ .exe │ │
-│ │ (Vercel) │ │ (Flutter) │ │ (Flutter) │ │
-│ └──────┬───────┘ └──────┬───────┘ └──────┬───────┘ │
-└─────────┼─────────────────┼─────────────────┼──────────────┘
-│ │ │
-│ Internet (HTTPS) │
-│ │ │
-┌─────────▼─────────────────▼─────────────────▼──────────────┐
-│ SUPABASE (Nube) │
-│ - PostgreSQL (Base de Datos) │
-│ - API REST (Backend) │
-│ - Auth (Autenticación) │
-│ - Storage (Archivos) │
-│ - Realtime (Sincronización) │
-└─────────────────────────────────────────────────────────────┘
+## 🏗️ Arquitectura y Stack
 
-text
+```text
+Web (Vercel) ──┐
+App Móvil ─────┼──► SUPABASE (PostgreSQL + Auth + Storage + API)
+Desktop (.exe) ┘
+```
 
-### Stack Tecnológico
-
-| Componente | Tecnología | Costo |
+| Componente | Tecnología | Costo inicial |
 | :--- | :--- | :--- |
-| **Base de Datos** | PostgreSQL (Supabase) | $0 (plan Free, 500 MB) |
-| **Backend / API** | Supabase (API REST) | $0 |
+| **Base de Datos / Backend** | Supabase (PostgreSQL) | $0 |
 | **Autenticación** | Supabase Auth | $0 |
-| **Storage** | Supabase Storage | $0 (1 GB) |
-| **Frontend Web** | React / Vue / Next.js | $0 |
-| **Hosting Web** | Vercel | $0 (plan Hobby) |
-| **App Escritorio** | Flutter Desktop / Electron | $0 |
-| **App Móvil** | Flutter (Android/iOS) | $0 (APK) / $25 único (Google Play) |
-| **Dominio** | Namecheap / Cloudflare | ~$10/año (opcional) |
-
-**Costo total inicial:** **$0/mes**.
+| **Frontend Web** | React / Vue (Vercel) | $0 |
+| **App Escritorio / Móvil**| Flutter (Desktop / Mobile) | $0 |
 
 ---
 
 ## 📁 Estructura del Proyecto
-floryandes-system/
-├── .github/
-│ └── workflows/ # CI/CD (opcional)
-├── docs/ # Documentación
-│ ├── requerimientos.md # Documento de requerimientos
-│ ├── sprints.md # Planificación de sprints
-│ ├── historias.md # Historias de usuario
-│ └── bd.md # Diseño de base de datos (PlantUML)
-├── supabase/
-│ ├── migrations/ # Scripts SQL de migración
-│ │ ├── 001_crear_tablas.sql
-│ │ ├── 002_insertar_datos_iniciales.sql
-│ │ └── 003_indices.sql
-│ └── functions/ # Edge Functions (RPC)
-├── frontend-web/ # Frontend web (React/Vue)
-│ ├── public/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── services/ # Conexión con Supabase
-│ │ ├── hooks/
-│ │ ├── utils/
-│ │ └── App.jsx
-│ ├── package.json
-│ └── vercel.json
-├── app-movil/ # App móvil (Flutter)
-│ ├── lib/
-│ │ ├── screens/
-│ │ ├── widgets/
-│ │ ├── services/ # Conexión con Supabase
-│ │ ├── models/
-│ │ └── main.dart
-│ └── pubspec.yaml
-├── app-escritorio/ # App escritorio (Flutter Desktop)
-│ ├── lib/
-│ └── pubspec.yaml
-├── .env.example # Variables de entorno (ejemplo)
-├── .gitignore
-├── README.md # Este archivo
-└── LICENSE
 
-text
+```text
+floryandes-system/
+├── docs/                # Requerimientos, sprints, diagramas BD
+├── supabase/            # Migraciones y scripts SQL
+├── frontend-web/        # Aplicación Web (React/Vue)
+├── app-movil/           # App Android/iOS (Flutter)
+├── app-escritorio/      # App Windows (Flutter Desktop)
+├── .env.example
+└── README.md
+```
 
 ---
 
-## 🚀 Instalación y Configuración
+## 🚀 Inicio Rápido
 
-### Requisitos Previos
+### Requisitos
+- Node.js v18+
+- Flutter v3.0+
+- Git
+- Cuenta en Supabase y Vercel
 
-- **Node.js** v18+ (para el frontend web)
-- **Flutter** v3.0+ (para la app móvil y escritorio)
-- **Git** (para control de versiones)
-- **Cuenta en Supabase** (gratis)
-- **Cuenta en Vercel** (gratis)
+### Instalación
 
-### Paso 1: Clonar el repositorio
+1. **Clonar repositorio:**
+   ```bash
+   git clone https://github.com/tu-usuario/floryandes-system.git
+   cd floryandes-system
+   ```
+
+2. **Variables de Entorno (`.env`):**
+   ```env
+   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+   VITE_SUPABASE_ANON_KEY=tu-api-key
+   ```
+
+3. **Ejecutar Frontend Web:**
+   ```bash
+   cd frontend-web
+   npm install
+   npm run dev
+   ```
+
+4. **Ejecutar App Móvil:**
+   ```bash
+   cd ../app-movil
+   flutter pub get
+   flutter run
+   ```
+
+---
+
+## 🧪 Pruebas y Despliegue
 
 ```bash
-git clone https://github.com/tu-usuario/floryandes-system.git
-cd floryandes-system
-Paso 2: Configurar Supabase
-Crea un proyecto en supabase.com.
+# Pruebas
+cd frontend-web && npm run test
+cd app-movil && flutter test
 
-Nombre: floryandes-system.
+# Compilación y Deploy
+cd frontend-web && npm run build && vercel --prod  # Web
+cd app-movil && flutter build apk --release       # Android
+cd app-escritorio && flutter build windows --release # Windows .exe
+```
 
-Región: us-east-1 (la más cercana a Ecuador).
+---
 
-Copia la URL y la API Key del proyecto.
+## 📅 Roadmap resumido
 
-Ve al SQL Editor y ejecuta los scripts en orden:
+| Sprints | Enfoque |
+| :--- | :--- |
+| **Sprint 0 - 2** | Base de datos, Auth, Gestión de Clientes |
+| **Sprint 3 - 5** | Catálogo de Productos y Módulo de Facturación |
+| **Sprint 6 - 7** | Compras e Inventario en tiempo real |
+| **Sprint 8 - 9** | Reportes de Utilidades y Pérdidas |
+| **Sprint 10 - 13** | Apps de Escritorio (.exe), Móvil y QA final |
 
-supabase/migrations/001_crear_tablas.sql
+*Tiempo estimado total: ~27 semanas.*
 
-supabase/migrations/002_insertar_datos_iniciales.sql
+---
 
-supabase/migrations/003_indices.sql
+## 📝 Licencia y Contacto
 
-Paso 3: Configurar variables de entorno
-Crea un archivo .env en la raíz del proyecto:
-
-env
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu-api-key
-Paso 4: Instalar dependencias del frontend web
-bash
-cd frontend-web
-npm install
-npm run dev
-La web estará disponible en http://localhost:5173.
-
-Paso 5: Instalar dependencias de la app móvil
-bash
-cd app-movil
-flutter pub get
-flutter run
-Paso 6: Desplegar en Vercel
-Conecta tu repositorio de GitHub a Vercel.
-
-Configura las variables de entorno en Vercel.
-
-Vercel desplegará automáticamente en cada git push.
-
-📊 Base de Datos
-El sistema cuenta con las siguientes tablas principales:
-
-Tabla	Propósito
-Cliente	Datos de clientes (Sra. Jenny, Tía Elsa, etc.).
-Usuario	Usuarios del sistema (Admin, Vendedor, Bodeguero).
-Categoria	Categorías de productos (Bonches, Hierbas, Servicios, Insumos).
-Producto	Catálogo de productos (Bonches Rojos, Colores, Blancos, Aster, Solidago).
-Insumo	Materiales (Ligas, Zuncho, Binchas, Fundas, Cajas).
-Proveedor	Proveedores (TESSA, ING. CAJAS, DON ALBERTO, EDU FLOR, DENIS, SRA. MIRIAM).
-Compra	Cabecera de compras.
-DetalleCompra	Líneas de compra (con cantidades sanas y pérdidas).
-MovimientoInventario	Kardex de entradas y salidas.
-Factura	Cabecera de facturas.
-DetalleFactura	Líneas de factura.
-Pago	Abonos a facturas.
-GastoOperativo	Costos indirectos (arriendo, luz, sueldos).
-Auditoria	Registro de cambios en el sistema.
-Para más detalle, ver docs/bd.md.
-
-🧪 Pruebas
-Frontend Web
-bash
-cd frontend-web
-npm run test
-App Móvil
-bash
-cd app-movil
-flutter test
-Base de Datos
-Las pruebas de la base de datos se hacen directamente en Supabase SQL Editor.
-
-🚢 Despliegue
-Frontend Web (Vercel)
-bash
-cd frontend-web
-npm run build
-vercel --prod
-App Móvil (APK)
-bash
-cd app-movil
-flutter build apk --release
-El APK estará en build/app/outputs/flutter-apk/app-release.apk.
-
-App Escritorio (.exe)
-bash
-cd app-escritorio
-flutter build windows --release
-El .exe estará en build/windows/runner/Release/.
-
-📅 Roadmap de Sprints
-Sprint	Duración	Objetivo	Estado
-0	1 semana	Preparación	⏳ Pendiente
-1	2 semanas	BD y Auth	⏳ Pendiente
-2	2 semanas	Clientes	⏳ Pendiente
-3	2 semanas	Productos	⏳ Pendiente
-4	2 semanas	Facturación 1	⏳ Pendiente
-5	2 semanas	Facturación 2	⏳ Pendiente
-6	2 semanas	Compras	⏳ Pendiente
-7	2 semanas	Inventario	⏳ Pendiente
-8	2 semanas	Reportes 1	⏳ Pendiente
-9	2 semanas	Reportes 2	⏳ Pendiente
-10	2 semanas	.exe	⏳ Pendiente
-11	2 semanas	App Móvil 1	⏳ Pendiente
-12	2 semanas	App Móvil 2	⏳ Pendiente
-13	2 semanas	Pruebas y Capacitación	⏳ Pendiente
-Duración total estimada: ~27 semanas (~6.5 meses).
-
-🤝 Contribución
-Este es un proyecto privado. Si eres colaborador:
-
-Crea una rama: git checkout -b feature/nueva-funcionalidad.
-
-Haz tus cambios y commitea: git commit -m "Agrega nueva funcionalidad".
-
-Sube la rama: git push origin feature/nueva-funcionalidad.
-
-Abre un Pull Request.
-
-Convención de Commits
-feat: Nueva funcionalidad.
-
-fix: Corrección de bug.
-
-docs: Cambios en documentación.
-
-style: Cambios de formato (no afectan código).
-
-refactor: Refactorización de código.
-
-test: Agrega o modifica pruebas.
-
-chore: Tareas de mantenimiento.
-
-📝 Licencia
-Este proyecto es privado y de uso exclusivo de la florería. No se permite su distribución sin autorización.
-
-📞 Contacto
-Desarrollador: [Tu Nombre]
-
-Email: [tu-email@ejemplo.com]
-
-Repositorio: https://github.com/tu-usuario/floryandes-system
-
-🙏 Agradecimientos
-A Dios, por la oportunidad de digitalizar el negocio familiar.
-
-A mi papá, por confiar en este proyecto.
-
-A Supabase y Vercel, por ofrecer planes gratuitos que hacen posible este sistema.
-
-📚 Documentación Adicional
-Documento de Requerimientos
-
-Diseño de Base de Datos
-
-Planificación de Sprints
-
-Historias de Usuario
+- **Licencia:** Proyecto privado de uso exclusivo para la florería.
+- **Contacto:** [Tu Nombre] - [tu-email@ejemplo.com]
