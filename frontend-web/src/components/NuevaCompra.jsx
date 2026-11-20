@@ -18,7 +18,24 @@ import { getProveedores, getProximoNumeroCompra, crearCompra } from '../services
 import { getProductos } from '../services/productosService';
 import { useAuth } from '../context/AuthContext';
 
-export default function NuevaCompra({ onVolver, onCompraGuardada }) {
+const calculatePurchaseRow = (row) => {
+  const recibida = Math.max(0, parseFloat(row.cantidad_recibida) || 0);
+  const perdida = Math.min(recibida, Math.max(0, parseFloat(row.cantidad_perdida) || 0));
+  const sana = Math.max(0, recibida - perdida);
+  const costoUnit = Math.max(0, parseFloat(row.costo_unitario) || 0);
+  const subtotal = sana * costoUnit;
+  const costoTotalRecibido = recibida * costoUnit;
+  const costoRealSano = sana > 0 ? costoTotalRecibido / sana : costoUnit;
+
+  return {
+    ...row,
+    cantidad_sana: String(sana),
+    subtotal: Math.round(subtotal * 100) / 100,
+    costo_real_sano: Math.round(costoRealSano * 100) / 100,
+  };
+};
+
+export default function NuevaCompra({ onVolver, onCompraGuardada, initialSuggestion = null }) {
   const { currentUser } = useAuth();
 
   // Header states
@@ -74,8 +91,31 @@ export default function NuevaCompra({ onVolver, onCompraGuardada }) {
         const prods = prodsRes?.productos || [];
         setProductosCatalogo(prods);
 
-        // Pre-select first product if available
-        if (prods.length > 0) {
+        if (initialSuggestion && prods.length > 0) {
+          const suggestedItems = [
+            ['BON-ROJ', initialSuggestion.resultado.rojos],
+            ['BON-COL', initialSuggestion.resultado.colores],
+            ['BON-BLA', initialSuggestion.resultado.blancos],
+          ]
+            .map(([code, quantity], index) => {
+              const product = prods.find(item => item.codigo === code);
+              if (!product || quantity <= 0) return null;
+              return calculatePurchaseRow({
+                id: Date.now() + index,
+                id_producto: String(product.id_producto),
+                cantidad_recibida: String(quantity),
+                cantidad_perdida: '0',
+                cantidad_sana: String(quantity),
+                motivo_perdida: 'Maltratados',
+                costo_unitario: '1.35',
+              });
+            })
+            .filter(Boolean);
+
+          if (suggestedItems.length > 0) {
+            setItems(suggestedItems);
+          }
+        } else if (prods.length > 0) {
           setItems(prev => [
             {
               ...prev[0],
@@ -94,34 +134,12 @@ export default function NuevaCompra({ onVolver, onCompraGuardada }) {
       }
     }
     initData();
-  }, []);
-
-  // Row recalculation helper
-  const calculateRow = (row) => {
-    const recibida = Math.max(0, parseFloat(row.cantidad_recibida) || 0);
-    const perdida = Math.min(recibida, Math.max(0, parseFloat(row.cantidad_perdida) || 0));
-    const sana = Math.max(0, recibida - perdida);
-    const costoUnit = Math.max(0, parseFloat(row.costo_unitario) || 0);
-
-    // Criterio 6.2: El subtotal se calcula como cantidad_sana * costo_unitario
-    const subtotal = sana * costoUnit;
-
-    // Criterio 6.3: El sistema calcula el costo real por bonche sano: (costo_total_recibido) / (cantidad_sana)
-    const costoTotalRecibido = recibida * costoUnit;
-    const costoRealSano = sana > 0 ? costoTotalRecibido / sana : costoUnit;
-
-    return {
-      ...row,
-      cantidad_sana: String(sana),
-      subtotal: Math.round(subtotal * 100) / 100,
-      costo_real_sano: Math.round(costoRealSano * 100) / 100,
-    };
-  };
+  }, [initialSuggestion]);
 
   // Add product row
   const handleAddRow = () => {
     const firstProd = productosCatalogo[0];
-    const newRow = calculateRow({
+    const newRow = calculatePurchaseRow({
       id: Date.now(),
       id_producto: firstProd ? String(firstProd.id_producto) : '',
       cantidad_recibida: '10',
@@ -157,7 +175,7 @@ export default function NuevaCompra({ onVolver, onCompraGuardada }) {
         }
       }
 
-      next[idx] = calculateRow(target);
+      next[idx] = calculatePurchaseRow(target);
       return next;
     });
   };
