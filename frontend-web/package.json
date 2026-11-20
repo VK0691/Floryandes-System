@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node --test",
     "lint": "oxlint",
+    "import:ventas-historicas": "node scripts/importVentasHistoricas.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
+    "javascript-lp-solver": "^1.0.3",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",
+    "javascript-lp-solver": "^1.0.3",
     "lucide-react": "^1.48.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

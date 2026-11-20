@@ -173,6 +173,16 @@ CREATE TABLE IF NOT EXISTS auditoria (
   detalle TEXT
 );
 
+-- 15. HISTORIAL DE OPTIMIZACIONES DE COMPRA (Sprint 8.5)
+CREATE TABLE IF NOT EXISTS optimizacion_log (
+  id_optimizacion SERIAL PRIMARY KEY,
+  fecha TIMESTAMP DEFAULT NOW(),
+  presupuesto_usado DECIMAL(12,2) NOT NULL DEFAULT 0,
+  resultado_solver JSONB NOT NULL,
+  utilidad_estimada DECIMAL(12,2) NOT NULL DEFAULT 0,
+  datos_entrada JSONB
+);
+
 -- ==========================================
 -- ÍNDICES PARA MEJOR RENDIMIENTO
 -- ==========================================
